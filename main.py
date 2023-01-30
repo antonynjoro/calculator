@@ -1,32 +1,50 @@
 from tkinter import *
+import operator
+
 num_list = []
 
-calculation_dict = {"first_num_list": [], "second_num_list": [], "operator": "", "result": None}
+calculation_dict = {"first_num": "", "second_num": "", "operator": "", "result": None}
 
+# My original calculate function
+# def calculate():
+#     global calculation_dict
+#
+#     first_num = int("".join(calculation_dict["first_num"]))
+#     second_num = int("".join(calculation_dict["second_num"]))
+#
+#     if calculation_dict["operator"] == "-":
+#         calculation_dict["result"] = str(first_num - second_num)
+#         print(calculation_dict)
+#     elif calculation_dict["operator"] == "+":
+#         calculation_dict["result"] = str(first_num + second_num)
+#         print(calculation_dict)
+#     elif calculation_dict["operator"] == "×":
+#             calculation_dict["result"] = str(first_num * second_num)
+#             print(calculation_dict)
+#     elif calculation_dict["operator"] == "÷":
+#             calculation_dict["result"] = str(first_num / second_num)
+#             print(calculation_dict)
 
+# calculate function rewritten with gpt's help
 def calculate():
-    global calculation_dict
-
-    first_num = int("".join(calculation_dict["first_num_list"]))
-    second_num = int("".join(calculation_dict["second_num_list"]))
-
-    if calculation_dict["operator"] == "-":
-        calculation_dict["result"] = str(first_num - second_num)
-        print(calculation_dict)
-    elif calculation_dict["operator"] == "+":
-        calculation_dict["result"] = str(first_num + second_num)
-        print(calculation_dict)
-    elif calculation_dict["operator"] == "×":
-            calculation_dict["result"] = str(first_num * second_num)
-            print(calculation_dict)
-    elif calculation_dict["operator"] == "÷":
-            calculation_dict["result"] = str(first_num / second_num)
-            print(calculation_dict)
+    operator_dict = {
+        "+": operator.add,
+        "-": operator.sub,
+        "×": operator.mul,
+        "÷": operator.truediv
+    }
+    try:
+        first_num = int("".join(calculation_dict["first_num"]))
+    except ValueError:
+        first_num = float("".join(calculation_dict["first_num"]))
+    try:
+        second_num = int("".join(calculation_dict["second_num"]))
+    except ValueError:
+        second_num = float("".join(calculation_dict["second_num"]))
+    calculation_dict["result"] = operator_dict[calculation_dict["operator"]](first_num, second_num)
 
 
-
-
-def add_number(character:str):
+def add_character(character:str):
     global num_list
     if character.isdigit() or character ==".":
         num_list.append(character)
@@ -34,17 +52,18 @@ def add_number(character:str):
     elif character in("÷", "×","-","+",):
         if len(num_list) == 0:
             return
-        elif len(calculation_dict["first_num_list"]) == 0:
-            calculation_dict["first_num_list"]=num_list
+        elif len(calculation_dict["first_num"]) == 0:
+            calculation_dict["first_num"]="".join(num_list)
             calculation_dict["operator"] = character
 
+
         else:
-            calculation_dict["second_num_list"] = num_list
-            calculation_dict["operator"] = character
+            calculation_dict["second_num"] ="".join(num_list)
             calculate()
-            calculation_dict["first_num_list"] = calculation_dict["result"]
+            calculation_dict["operator"] = character
+            calculation_dict["first_num"] = str(calculation_dict["result"])
             calculation_dict["result"] = None
-            calc_area.config(text=calculation_dict["first_num_list"])
+            calc_area.config(text=calculation_dict["first_num"])
 
 
         print(calculation_dict)
@@ -54,10 +73,10 @@ def add_number(character:str):
     elif character == "=":
         if len(num_list) == 0:
             return
-        calculation_dict["second_num_list"]=num_list
+        calculation_dict["second_num"]="".join(num_list)
         calculate()
         print(calculation_dict)
-        num_list = []
+        num_list = ""
         calc_area.config(text=calculation_dict["result"])
         print(calculation_dict)
 
@@ -101,7 +120,7 @@ buttons = {}
 for i, text in enumerate(button_text):
     button = Button(text=text)
     button.config(height=BTN_HEIGHT, width=BTN_WIDTH, font=(FONT_MD), bg=ORANGE)
-    button.config(command=lambda x=text: add_number(x))
+    button.config(command=lambda x=text: add_character(x))
     button.grid(column=i % 4, row=TOP_ROWSPAN + 1 + i // 4, sticky=E + W + N + S)
     buttons[text] = button
 
