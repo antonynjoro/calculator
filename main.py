@@ -1,13 +1,76 @@
 from tkinter import *
+num_list = []
 
-def add_number(numeral:str):
-    calc_area.config(text=numeral)
+calculation_dict = {"first_num_list": [], "second_num_list": [], "operator": "", "result": None}
+
+
+def calculate():
+    global calculation_dict
+
+    first_num = int("".join(calculation_dict["first_num_list"]))
+    second_num = int("".join(calculation_dict["second_num_list"]))
+
+    if calculation_dict["operator"] == "-":
+        calculation_dict["result"] = str(first_num - second_num)
+        print(calculation_dict)
+    elif calculation_dict["operator"] == "+":
+        calculation_dict["result"] = str(first_num + second_num)
+        print(calculation_dict)
+    elif calculation_dict["operator"] == "×":
+            calculation_dict["result"] = str(first_num * second_num)
+            print(calculation_dict)
+    elif calculation_dict["operator"] == "÷":
+            calculation_dict["result"] = str(first_num / second_num)
+            print(calculation_dict)
+
+
+
+
+def add_number(character:str):
+    global num_list
+    if character.isdigit() or character ==".":
+        num_list.append(character)
+        calc_area.config(text="".join(num_list))
+    elif character in("÷", "×","-","+",):
+        if len(num_list) == 0:
+            return
+        elif len(calculation_dict["first_num_list"]) == 0:
+            calculation_dict["first_num_list"]=num_list
+            calculation_dict["operator"] = character
+
+        else:
+            calculation_dict["second_num_list"] = num_list
+            calculation_dict["operator"] = character
+            calculate()
+            calculation_dict["first_num_list"] = calculation_dict["result"]
+            calculation_dict["result"] = None
+            calc_area.config(text=calculation_dict["first_num_list"])
+
+
+        print(calculation_dict)
+        num_list = []
+
+
+    elif character == "=":
+        if len(num_list) == 0:
+            return
+        calculation_dict["second_num_list"]=num_list
+        calculate()
+        print(calculation_dict)
+        num_list = []
+        calc_area.config(text=calculation_dict["result"])
+        print(calculation_dict)
+
+
+
 
 FONT_LG = ("Lato", 32, "bold")
 FONT_MD = ("Lato", 24, "normal")
 BTN_HEIGHT = 0
 BTN_WIDTH = 1
 TOP_ROWSPAN = 1
+
+# calculation
 
 # Colors
 LIGHT_BG = "#2C3647"
