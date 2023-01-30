@@ -5,81 +5,68 @@ num_list = []
 
 calculation_dict = {"first_num": "", "second_num": "", "operator": "", "result": None}
 
-# My original calculate function
-# def calculate():
-#     global calculation_dict
-#
-#     first_num = int("".join(calculation_dict["first_num"]))
-#     second_num = int("".join(calculation_dict["second_num"]))
-#
-#     if calculation_dict["operator"] == "-":
-#         calculation_dict["result"] = str(first_num - second_num)
-#         print(calculation_dict)
-#     elif calculation_dict["operator"] == "+":
-#         calculation_dict["result"] = str(first_num + second_num)
-#         print(calculation_dict)
-#     elif calculation_dict["operator"] == "×":
-#             calculation_dict["result"] = str(first_num * second_num)
-#             print(calculation_dict)
-#     elif calculation_dict["operator"] == "÷":
-#             calculation_dict["result"] = str(first_num / second_num)
-#             print(calculation_dict)
 
-# calculate function rewritten with gpt's help
+#calculate function rewritten with gpt's help see old function in the "old.py" file
 def calculate():
+    # dictionary containing the operator and its corresponding function
     operator_dict = {
         "+": operator.add,
         "-": operator.sub,
         "×": operator.mul,
         "÷": operator.truediv
     }
+    # try to convert the first number to an int, if not possible convert to float
     try:
         first_num = int("".join(calculation_dict["first_num"]))
     except ValueError:
         first_num = float("".join(calculation_dict["first_num"]))
+    # try to convert the second number to an int, if not possible convert to float
     try:
         second_num = int("".join(calculation_dict["second_num"]))
     except ValueError:
         second_num = float("".join(calculation_dict["second_num"]))
+    # perform the calculation based on the operator and store the result in calculation_dict
     calculation_dict["result"] = operator_dict[calculation_dict["operator"]](first_num, second_num)
+
 
 
 def add_character(character:str):
     global num_list
-    if character.isdigit() or character ==".":
+    # check if character is a digit or '.'
+    if character.isdigit() or character == ".":
+        # append character to num_list
         num_list.append(character)
+        # update the calc_area with the new number
         calc_area.config(text="".join(num_list))
+    # check if character is an operator
     elif character in("÷", "×","-","+",):
+        # if num_list is empty, return
         if len(num_list) == 0:
             return
+        # if first_num in calculation_dict is empty, store the current number in first_num and operator
         elif len(calculation_dict["first_num"]) == 0:
-            calculation_dict["first_num"]="".join(num_list)
+            calculation_dict["first_num"] = "".join(num_list)
             calculation_dict["operator"] = character
-
-
+        # if first_num is not empty, store the current number in second_num, perform calculation and update first_num and operator
         else:
-            calculation_dict["second_num"] ="".join(num_list)
+            calculation_dict["second_num"] = "".join(num_list)
             calculate()
             calculation_dict["operator"] = character
             calculation_dict["first_num"] = str(calculation_dict["result"])
             calculation_dict["result"] = None
             calc_area.config(text=calculation_dict["first_num"])
-
-
-        print(calculation_dict)
+        # empty the num_list
         num_list = []
-
-
+    # check if character is '='
     elif character == "=":
+        # if num_list is empty, return
         if len(num_list) == 0:
             return
-        calculation_dict["second_num"]="".join(num_list)
+        # store the current number in second_num, perform calculation and update calc_area with the result
+        calculation_dict["second_num"] = "".join(num_list)
         calculate()
-        print(calculation_dict)
         num_list = ""
         calc_area.config(text=calculation_dict["result"])
-        print(calculation_dict)
-
 
 
 
