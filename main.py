@@ -8,6 +8,7 @@ calculation_dict = {"first_num": "", "second_num": "", "operator": "", "result":
 
 #calculate function rewritten with gpt's help see old function in the "old.py" file
 def calculate():
+    """Performs the calculation"""
     # dictionary containing the operator and its corresponding function
     operator_dict = {
         "+": operator.add,
@@ -31,6 +32,7 @@ def calculate():
 
 
 def add_character(character:str):
+    """accepts a character as a string and displays it to the user and assigns it for calculation"""
     global num_list
     # check if character is a digit or '.'
     if character.isdigit() or character == ".":
@@ -69,6 +71,21 @@ def add_character(character:str):
         calc_area.config(text=calculation_dict["result"])
 
 
+
+def clear_input():
+    global num_list
+    num_list = []
+    calc_area.config(text="0")
+
+
+
+
+def clear_everything():
+    global num_list
+    num_list = []
+    calc_area.config(text="0")
+    calculation_dict["second_num"] = ""
+    calculation_dict["first_num"] = ""
 
 FONT_LG = ("Lato", 32, "bold")
 FONT_MD = ("Lato", 24, "normal")
@@ -113,5 +130,8 @@ for i, text in enumerate(button_text):
 
 buttons["+"].grid(rowspan=2)
 buttons["="].grid(columnspan=2, row=TOP_ROWSPAN + 5, column=2)
+
+buttons["C"].config(command=clear_input)
+buttons["CE"].config(command=clear_everything)
 
 window.mainloop()
